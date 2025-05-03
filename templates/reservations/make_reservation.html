@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Reserve Room: {{ room.name }}</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        {% if user.is_superuser %}
+            <div class="form-group">
+                <label for="id_user">Select User</label>
+                {{ form.user }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Reserve</button>
+    </form>
+
+    <hr>
+    <h4>Already Reserved Time Slots for {{ room.name }}</h4>
+    <ul class="list-group mt-3">
+        {% if existing_reservations %}
+            {% for reservation in existing_reservations %}
+                <li class="list-group-item">
+                    {{ reservation.start_time|date:"Y-m-d H:i" }} &rarr; {{ reservation.end_time|date:"Y-m-d H:i" }}
+                </li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item">No future reservations for this room.</li>
+        {% endif %}
+    </ul>
+
+    <a href="{% url 'reservations:room_list' %}" class="btn btn-secondary mt-3">Back to Room List</a>
+</div>
+{% endblock %}

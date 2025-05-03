@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Available Conference Rooms</h2>
+
+    {% if rooms %}
+        <ul>
+            {% for room in rooms %}
+                <li>
+                    {{ room.name }} (Capacity: {{ room.capacity }} people)
+                    <a href="{% url 'reservations:make_reservation' room.id %}">Reserve</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No rooms available at the moment.</p>
+    {% endif %}
+{% endblock %}

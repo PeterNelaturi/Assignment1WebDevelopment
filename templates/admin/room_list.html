@@ -1,0 +1,27 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Conference Room List</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Capacity</th>
+        <th>Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for room in rooms %}
+        <tr>
+          <td>{{ room.name }}</td>
+          <td>{{ room.capacity }}</td>
+          <td>{{ room.location }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">No rooms available</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
