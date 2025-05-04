@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome, {{ request.user.first_name|default:request.user.username }}!</h2>
+
+    <p class="text-muted">
+        {% if request.user.is_superuser %}
+            You are logged in as <strong>Admin</strong>.
+        {% else %}
+            You are logged in as a <strong>regular user</strong>.
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <div class="mb-4">
+        <h4>Your Upcoming Reservations</h4>
+        {% if upcoming_reservations %}
+            <ul class="list-group">
+                {% for reservation in upcoming_reservations %}
+                    <li class="list-group-item">
+                        <strong>{{ reservation.room.name }}</strong><br>
+                        {{ reservation.start_time|date:"M d, Y H:i" }} - {{ reservation.end_time|date:"H:i" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">You have no upcoming reservations.</p>
+        {% endif %}
+    </div>
+
+     <div class="d-flex flex-wrap gap-2">
+       <a href="{% url 'reservations:room_list' %}" class="btn btn-primary">🏠 View Rooms</a>
+        <a href="{% url 'reservations:reservation_list' %}" class="btn btn-secondary">📅 My Reservations</a>
+        <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">🔓 Logout</button>
+    </form>
+</div>
+</div>
+{% endblock %}

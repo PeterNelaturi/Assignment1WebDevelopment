@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from Assignment1WebDevelopment import settings
 from .models import ConferenceRoom, Reservation
 from .forms import ReservationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.utils import timezone
@@ -89,7 +89,17 @@ def reservation_list(request):
         reservations = Reservation.objects.all()
     else:
         reservations = Reservation.objects.filter(user=request.user)
-    return render(request, 'reservations/reservations_list.html', {'reservations': reservations})
+
+
+    if request.user.is_superuser:
+        title = "All Reservations"
+    else:
+        title = "My Reservations"
+
+    return render(request, 'reservations/reservations_list.html', {
+        'reservations': reservations,
+        'title': title,
+    })
 
 
 @login_required
@@ -171,7 +181,24 @@ def user_login(request):
             messages.error(request, 'Invalid username or password.')
     return render(request, 'reservations/login.html')
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
 
-from django.shortcuts import render
+def admin_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_superuser:
+            login(request, user)
+            return redirect('reservations:admin_dashboard')
+        else:
+            messages.error(request, 'Invalid username or password, or you are not an admin.')
+    return render(request, 'admin_login.html')
+
+
+
 
 # Create your views here.

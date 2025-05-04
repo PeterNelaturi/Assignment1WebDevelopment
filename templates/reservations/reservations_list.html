@@ -1,13 +1,37 @@
 {% extends 'base.html' %}
+
 {% block content %}
-  <h2>Your Reservations</h2>
-  <ul>
-    {% for reservation in reservations %}
-      <li>
-        {{ reservation.room.name }} - {{ reservation.start_time }} to {{ reservation.end_time }}
-        <a href="{% url 'reservations:edit_reservation' reservation.id %}">Edit</a>
-        <a href="{% url 'reservations:cancel_reservation' reservation.id %}">Cancel</a>
-      </li>
-    {% endfor %}
-  </ul>
+<h2>{{ title }}</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Room</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations %}
+        <tr>
+            <td>{{ reservation.room.name }}</td>
+            <td>{{ reservation.start_time|date:"Y-m-d H:i" }}</td>
+            <td>{{ reservation.end_time|date:"Y-m-d H:i" }}</td>
+            <td>{{ reservation.user.username }}</td>
+            <td>
+                {% if user == reservation.user or user.is_superuser %}
+                    <a href="{% url 'reservations:edit_reservation' reservation.id %}">Edit</a> |
+                    <a href="{% url 'reservations:cancel_reservation' reservation.id %}">Cancel</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No reservations found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

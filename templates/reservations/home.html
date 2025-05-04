@@ -32,7 +32,9 @@
 
      <div class="d-flex flex-wrap gap-2">
        <a href="{% url 'reservations:room_list' %}" class="btn btn-primary">🏠 View Rooms</a>
-        <a href="{% url 'reservations:reservation_list' %}" class="btn btn-secondary">📅 My Reservations</a>
+        <a href="{% url 'reservations:reservation_list' %}" class="btn btn-secondary">
+    📅 {% if request.user.is_superuser %}All Reservations{% else %}My Reservations{% endif %}
+</a>
         <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">🔓 Logout</button>

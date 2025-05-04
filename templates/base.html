@@ -12,7 +12,9 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'reservations:home' %}" class="me-3">Home</a>
                 <a href="{% url 'reservations:room_list' %}" class="me-3">View Rooms</a>
-                <a href="{% url 'reservations:reservation_list' %}" class="me-3">My Reservations</a>
+                <a href="{% url 'reservations:reservation_list' %}" class="me-3">
+    {% if user.is_superuser %}All Reservations{% else %}My Reservations{% endif %}
+</a>
 
                 <form method="post" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
