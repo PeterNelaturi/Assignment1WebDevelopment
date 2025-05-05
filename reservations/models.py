@@ -20,7 +20,3 @@ class Reservation(models.Model):
     def __str__(self):
         return f"Reservation for {self.room.name} by {self.user.username} on {self.start_time}"
 
-
-from django.db import models
-
-# Create your models here.

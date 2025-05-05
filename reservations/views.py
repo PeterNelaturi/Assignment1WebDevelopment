@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.models import User
 from django.utils.timezone import localtime
 
 from django.core.mail import send_mail
@@ -5,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from Assignment1WebDevelopment import settings
 from .models import ConferenceRoom, Reservation
-from .forms import ReservationForm
+from .forms import ReservationForm, RoomForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -184,7 +186,8 @@ def user_login(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    return render(request, 'reservations/admin_dashboard.html')
+
 
 def admin_login(request):
     if request.method == 'POST':
@@ -199,6 +202,124 @@ def admin_login(request):
     return render(request, 'admin_login.html')
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def user_management(request):
+    users = User.objects.all()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        user_id = request.POST.get('user_id')
+
+        if action == 'delete' and user_id:
+            user_to_delete = get_object_or_404(User, id=user_id)
+            user_to_delete.delete()
+            messages.success(request, f'User {user_to_delete.username} has been deleted.')
+        elif action == 'create':
+            return redirect('reservations:create_user')
+
+    return render(request, 'reservations/admin_user_management.html', {'users': users})
 
 
-# Create your views here.
+# View to create a new user (admin only)
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def create_user(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'New user created successfully.')
+            return redirect('reservations:user_management')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'reservations/create_user.html', {'form': form})
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User {user.username} has been updated.')
+            return redirect('reservations:user_management')
+    else:
+        form = UserChangeForm(instance=user)
+
+    return render(request, 'reservations/edit_user.html', {'form': form, 'user': user})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_panel_reservation(request):
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            if not reservation.user:
+                reservation.user = request.user  # fallback
+            reservation.save()
+            messages.success(request, 'Reservation created successfully.')
+            return redirect('reservations:user_management')
+    else:
+        form = ReservationForm()
+
+    return render(request, 'reservations/admin_make_reservation.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def admin_panel(request):
+    rooms = ConferenceRoom.objects.all()
+    users = User.objects.all()
+    return render(request, 'reservations/admin_panel.html', {
+        'rooms': rooms,
+        'users': users,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_room(request):
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Room added successfully.")
+            return redirect('reservations:admin_panel')
+    else:
+        form = RoomForm()
+    return render(request, 'reservations/add_room.html', {'form': form})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def edit_room(request, room_id):
+    room = get_object_or_404(ConferenceRoom, id=room_id)
+    if request.method == 'POST':
+        form = RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Room updated successfully.")
+            return redirect('reservations:admin_panel')
+    else:
+        form = RoomForm(instance=room)
+    return render(request, 'reservations/edit_room.html', {'form': form, 'room': room})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def delete_room(request, room_id):
+    room = get_object_or_404(ConferenceRoom, id=room_id)
+    if request.method == 'POST':
+        room.delete()
+        messages.success(request, f"Room {room.name} has been deleted.")
+        return redirect('reservations:admin_panel')
+    return render(request, 'reservations/confirm_delete_room.html', {'room': room})
+
+
+
+

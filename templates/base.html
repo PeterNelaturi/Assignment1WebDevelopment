@@ -13,8 +13,12 @@
                 <a href="{% url 'reservations:home' %}" class="me-3">Home</a>
                 <a href="{% url 'reservations:room_list' %}" class="me-3">View Rooms</a>
                 <a href="{% url 'reservations:reservation_list' %}" class="me-3">
-    {% if user.is_superuser %}All Reservations{% else %}My Reservations{% endif %}
-</a>
+                    {% if user.is_superuser %}All Reservations{% else %}My Reservations{% endif %}
+                </a>
+
+                {% if user.is_superuser %}
+                    <a href="{% url 'reservations:admin_panel' %}" class="me-3">Admin Panel</a>
+                {% endif %}
 
                 <form method="post" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
@@ -28,7 +32,6 @@
     </header>
 
     <main class="container mt-4">
-
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -41,7 +44,6 @@
         {% block content %}
         {% endblock %}
     </main>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

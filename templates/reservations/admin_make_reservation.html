@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Create Reservation (Admin)</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Reservation</button>
+  </form>
+  <a href="{% url 'reservations:user_management' %}">Back to Admin Panel</a>
+{% endblock %}

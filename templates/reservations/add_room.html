@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Add Room</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Room</button>
+  </form>
+  <a href="{% url 'reservations:admin_panel' %}">Back to Admin Panel</a>
+{% endblock %}

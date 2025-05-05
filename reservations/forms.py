@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from .models import Reservation
+from .models import ConferenceRoom
 
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ['start_time', 'end_time', 'user']
+        fields = ['room', 'start_time', 'end_time', 'user']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
@@ -54,3 +55,8 @@ class ReservationForm(forms.ModelForm):
         if end_time and end_time < timezone.now():
             raise forms.ValidationError("End time cannot be in the past.")
         return end_time
+
+class RoomForm(forms.ModelForm):
+        class Meta:
+            model = ConferenceRoom
+            fields = ['name', 'capacity', 'location']

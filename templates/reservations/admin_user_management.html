@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>User Management</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <form method="post" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+              <button type="submit">Delete</button>
+            </form>
+            <a href="{% url 'reservations:edit_user' user.id %}">Edit</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'reservations:create_user' %}">Create New User</a>
+  <br>
+  <a href="{% url 'reservations:admin_panel_make_reservation' %}">Reserve Room for a User</a>
+
+  <hr>
+
+  <h2>Room Management</h2>
+  <a href="{% url 'reservations:add_room' %}">Add New Room</a>
+
+  <h3>Room List</h3>
+  <ul>
+    {% for room in rooms %}
+      <li>
+        {{ room.name }}
+        <a href="{% url 'reservations:edit_room' room.id %}">Edit</a>
+        <a href="{% url 'reservations:delete_room' room.id %}">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

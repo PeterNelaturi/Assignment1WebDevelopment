@@ -61,6 +61,5 @@ class ConferenceRoomAdmin(admin.ModelAdmin):
 
 admin.site.register(ConferenceRoom, ConferenceRoomAdmin)
 admin.site.register(Reservation, ReservationAdmin)
-from django.contrib import admin
 
-# Register your models here.
+

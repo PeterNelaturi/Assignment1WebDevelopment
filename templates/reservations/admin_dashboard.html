@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Welcome, {{ request.user.username }}!</h2>
+  <p>This is your custom admin dashboard.</p>
+
+  <a href="{% url 'reservations:user_management' %}" class="btn btn-primary">Manage Users</a>
+
+  <h3>Admin Navigation</h3>
+  <ul>
+    <li><a href="{% url 'reservations:reservation_list' %}">View All Reservations</a></li>
+    <li><a href="{% url 'reservations:admin_dashboard' %}">Admin Dashboard</a></li>
+  </ul>
+{% endblock %}
