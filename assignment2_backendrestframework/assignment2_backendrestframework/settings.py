@@ -180,4 +180,5 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://assignment1-web-development-842y-pbon4k6j5.vercel.app"
 ]
