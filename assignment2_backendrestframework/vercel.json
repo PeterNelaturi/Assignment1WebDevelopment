@@ -1,0 +1,48 @@
+{
+
+  "framework": null,
+
+  "builds": [
+
+    {
+
+      "src": "assignment2_backendrestframework/wsgi.py",
+
+
+      "use": "@vercel/python",
+
+      "config": { "maxLambdaSize":  "15mb", "runtime":  "python3.9" }
+
+    }
+
+  ],
+
+  "routes": [
+
+    {
+
+      "src": "/(.*)",
+
+      "dest": "assignment2_backendrestframework/wsgi.py",
+
+      "headers": {
+
+        "Access-Control-Allow-Origin": "*",
+
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE, PUT"
+
+      }
+
+    },
+
+    {
+
+      "src": "/(.*)",
+
+      "dest": "assignment2_backendrestframework/wsgi.py"
+
+    }
+
+  ]
+
+}
