@@ -1,6 +1,7 @@
   import React, { useEffect, useState } from 'react';
   import axios from 'axios';
   import EditReservationForm from './EditReservation';
+  import {BaseUrl} from "../constants";
 
   function ReservationList() {
     const [reservations, setReservations] = useState([]);
@@ -13,7 +14,7 @@
     async function fetchReservations() {
       try {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:8000/api/reservations/'.trim();
+        const url = `${BaseUrl}/reservations/`;
 
         const response = await axios.get(url, {
           headers: { Authorization: `Token ${token}` },
@@ -29,7 +30,7 @@
       try {
         const token = localStorage.getItem('token');
         const cleanId = reservationId.toString().trim();
-        const url = `http://localhost:8000/api/reservations/${cleanId}/cancel/`.trim();
+        const url = `${BaseUrl}/reservations/${cleanId}/cancel/`;;
 
         await axios.delete(url, {
           headers: { Authorization: `Token ${token}` },

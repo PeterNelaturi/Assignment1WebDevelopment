@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {BaseUrl} from "../constants";
 
 function RoomList() {
   const [rooms, setRooms] = useState([]);
@@ -7,7 +8,7 @@ function RoomList() {
   useEffect(() => {
     async function fetchRooms() {
       try {
-        const response = await axios.get('http://localhost:8000/api/rooms/');
+        const response = await axios.get(`${BaseUrl}/rooms/`);
         setRooms(response.data);
       } catch (error) {
         console.error('Error fetching rooms', error);

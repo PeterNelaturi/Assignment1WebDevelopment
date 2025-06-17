@@ -26,7 +26,7 @@ function MakeReservation() {
       await axios.post(`${BaseUrl}/make-reservation/`, {
         room: roomId,
         start_time: startLocal,
-        end_time: startLocal,
+        end_time: endLocal,
       }, {
         headers: { 'Authorization': `Token ${token}` }
       });

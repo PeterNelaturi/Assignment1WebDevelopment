@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {BaseUrl} from "../constants";
 
 function ReservationForm() {
   const [rooms, setRooms] = useState([]);
@@ -11,7 +12,7 @@ function ReservationForm() {
   useEffect(() => {
     async function fetchRooms() {
       try {
-        const res = await axios.get('http://localhost:8000/api/rooms/');
+        const res = await axios.get(`${BaseUrl}/rooms/`);
         setRooms(res.data);
       } catch (err) {
         console.error(err);
@@ -25,7 +26,7 @@ function ReservationForm() {
   try {
     const token = localStorage.getItem('token');
     await axios.post(
-      'http://localhost:8000/api/reservations/make/',
+      `${BaseUrl}/reservations/make/`,
       {
         room_id: roomId,
         start_time: startTime,

@@ -16,7 +16,7 @@ function Login({ onLoginSuccess }) {
 
     try {
 
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+      const response = await axios.post('https://assignment1-web-development-uqdz.vercel.app/api/login/', {
         username,
         password
       });
